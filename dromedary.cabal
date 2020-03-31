@@ -1,0 +1,85 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 5b311bda0b59a079cbe802e222aa4511a85809af98c76a05b6c1a85b9853f9db
+
+name:           dromedary
+version:        0.0.0.1
+homepage:       https://github.com/adamwespiser/dromedary#readme
+bug-reports:    https://github.com/adamwespiser/dromedary/issues
+author:         Adam Wespiser
+maintainer:     Adam Wespiser
+copyright:      2020 Adam Wespiser
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/adamwespiser/dromedary
+
+library
+  exposed-modules:
+      Lib
+  other-modules:
+      Paths_dromedary
+  hs-source-dirs:
+      src
+  build-depends:
+      async
+    , base >=4.7 && <5
+    , containers
+    , mtl
+    , stm
+    , time
+    , transformers
+    , unliftio
+    , unliftio-core
+  default-language: Haskell2010
+
+executable dromedary
+  main-is: Main.hs
+  other-modules:
+      Paths_dromedary
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      async
+    , base >=4.7 && <5
+    , containers
+    , dromedary
+    , mtl
+    , stm
+    , time
+    , transformers
+    , unliftio
+    , unliftio-core
+  default-language: Haskell2010
+
+test-suite dromedary-tests
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_dromedary
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      async
+    , base >=4.7 && <5
+    , containers
+    , dromedary
+    , mtl
+    , stm
+    , time
+    , transformers
+    , unliftio
+    , unliftio-core
+  default-language: Haskell2010
