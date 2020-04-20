@@ -18,6 +18,7 @@ dependencies:
 - mtl
 - stm
 - transformers
+- text
 - time
 - unliftio
 - unliftio-core

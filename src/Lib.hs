@@ -1,4 +1,5 @@
-{-# Language DerivingStrategies, DerivingVia, FlexibleContexts, FlexibleInstances, GeneralizedNewtypeDeriving, StandaloneDeriving, UndecidableInstances  #-}
+{-# Language DerivingStrategies, DerivingVia, FlexibleContexts, FlexibleInstances, GeneralizedNewtypeDeriving, StandaloneDeriving, UndecidableInstances, OverloadedStrings  #-}
+
 module Lib
     ( loadTest
     , Cfg(maxTime, count)
@@ -19,6 +20,7 @@ import Control.Monad.IO.Unlift (MonadUnliftIO, askUnliftIO, withRunInIO)
 import Control.Monad.IO.Unlift
 
 import qualified Data.Map.Strict as Map
+import qualified Data.Text as T
 import Data.Time.Clock
   (diffUTCTime, getCurrentTime, picosecondsToDiffTime, secondsToNominalDiffTime, UTCTime)
 import GHC.Conc
@@ -38,6 +40,7 @@ data Cfg = Cfg {
   maxTime  :: Integer
 , count :: Count
 }
+
 
 ------------------------------------------------------------
 -- Controller
@@ -76,6 +79,22 @@ runJobs task = do
    liftIO $ putStrLn $ show $ unwrapCnt
    pure ()
 
+
+
+getStats :: (MonadReader Cfg m, Metric m, MonadIO m) => m T.Text
+getStats = do
+  countVar <- asks count
+  unwrapCnt <- liftIO $ readTVarIO $ countVar
+
+  let ks = Map.keys unwrapCnt
+  pure $ Map.foldr' (\a b -> expToText a <> b) "" unwrapCnt
+  -- pure $ T.pack $ show ks
+  where
+    expToText :: Map.Map PassFail Integer -> T.Text
+    expToText map =
+      let passNum = Map.findWithDefault 0 Pass map
+          failNum = Map.findWithDefault 0 Fail map
+      in T.concat $ fmap T.pack $ [ "Pass: " ++ show passNum ++ "Fail: " ++ show failNum]
 
 ------------------------------------------------------------
 -- Classes
