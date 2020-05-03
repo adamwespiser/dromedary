@@ -28,8 +28,8 @@ library:
 
 executables:
   dromedary:
-    main:                Main.hs
-    source-dirs:         app
+    main: Main.hs
+    source-dirs: app
     ghc-options:
     - -threaded
     - -rtsopts
@@ -37,6 +37,20 @@ executables:
     dependencies:
     - dromedary
     - unliftio-core
+  camel-server:
+    main: Main.hs
+    source-dirs: app/camel-server
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - dromedary
+    - servant-server
+    - servant
+    - unliftio-core
+    - random
+    - warp
 
 tests:
   dromedary-tests:
