@@ -36,6 +36,6 @@ main :: IO ()
 main = do
   putStrLn "start"
   cfg <- makeConfig [1,2]
-  runAppM (runJobs $ loadTest (solidRequestTask >> flakyRequestTask)) cfg
+  flip runAppM cfg $ runJobs [solidRequestTask, flakyRequestTask]
   print "done"
 

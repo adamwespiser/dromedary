@@ -51,14 +51,17 @@ loadTest action = do
         False -> action  >> loop start action
         True -> pure ()
 
-
-runJobs :: (MonadUnliftIO  m, MonadReader Cfg m, Metric m, MonadIO m) => m () -> m ()
-runJobs task = do
- cfg <- ask
+runJob :: (MonadUnliftIO  m, MonadReader Cfg m, Metric m, MonadIO m) => m () -> m ()
+runJob task =
  withAsync (loadTest task) $ \thread -> do
    wait thread
-   countVar <- asks count
-   unwrapCnt <- liftIO $ readTVarIO $ countVar
-   liftIO $ ppCountStruct $ unwrapCnt
    pure ()
+
+runJobs :: (MonadUnliftIO  m, MonadReader Cfg m, Metric m, MonadIO m) => [m ()] -> m ()
+runJobs jobs = do
+  countVar <- asks count
+  traverse runJob jobs
+  unwrapCnt <- liftIO $ readTVarIO $ countVar
+  liftIO $ ppCountStruct $ unwrapCnt
+
 
