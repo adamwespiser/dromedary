@@ -1,5 +1,12 @@
 {-# LANGUAGE DataKinds, DeriveGeneric, LambdaCase, TypeOperators #-}
 
+{-| Description: A simple server for mock load testing.
+This is a simple server for to "test" load testing.
+It support two GET request:
+  /solid - which always returns 'NoContent'
+  /flaky - which returns (NoContent,500 err) w/ 50% probability
+-}
+
 module Main where
 
 import Control.Monad.IO.Class (liftIO)
@@ -13,11 +20,12 @@ main :: IO ()
 main = do
   let port = 3000
       settings = defaultSettings & setPort port
+  putStrLn "starting server..."
   runSettings settings =<< mkApp
 
 type TestApi =
-  "solid" :> Capture "id" Integer :> Get '[JSON] Integer :<|>
-  "flaky" :> Capture "id" Integer :> Get '[JSON] Integer
+  "solid" :>  Get '[JSON] NoContent :<|>
+  "flaky" :>  Get '[JSON] NoContent
 
 api :: Proxy TestApi
 api = Proxy
@@ -28,11 +36,11 @@ mkApp = return $ serve api server
 server :: Server TestApi
 server = solid :<|> flaky
   where
-    solid :: Integer -> Handler Integer
-    solid i = return i
+    solid :: Handler NoContent
+    solid = pure NoContent
 
-    flaky :: Integer -> Handler Integer
-    flaky i = do
+    flaky :: Handler NoContent
+    flaky = do
       gen <- liftIO $ getStdRandom (randomR (0,1))
-      if ((gen :: Integer) == 1) then return 1 else throwError err500
+      if ((gen :: Integer) == 1) then return NoContent else throwError err500
 

@@ -6,15 +6,30 @@ author:              "Adam Wespiser"
 maintainer:          "Adam Wespiser"
 copyright:           "2020 Adam Wespiser"
 
+default-extensions:
+  OverloadedStrings
+  DerivingStrategies
+  DerivingVia
+  FlexibleContexts
+  FlexibleInstances
+  GeneralizedNewtypeDeriving
+  StandaloneDeriving
+  UndecidableInstances
+  OverloadedStrings
+
+
 extra-source-files:
 - README.md
 - ChangeLog.md
 
-
 dependencies:
+- ansi-wl-pprint
 - base >= 4.7 && < 5
+- bytestring
 - async
 - containers
+- http-conduit
+- http-types
 - mtl
 - stm
 - transformers
